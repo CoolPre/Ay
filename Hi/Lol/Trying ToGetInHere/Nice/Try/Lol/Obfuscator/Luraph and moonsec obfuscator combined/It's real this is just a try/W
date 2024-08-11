@@ -1,0 +1,76 @@
+-- Create a ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create a Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 400, 0, 300)
+frame.Position = UDim2.new(0.5, -200, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.Parent = screenGui
+
+-- Create the TextBox for script input
+local textBoxInput = Instance.new("TextBox")
+textBoxInput.Size = UDim2.new(0.9, 0, 0.3, 0)
+textBoxInput.Position = UDim2.new(0.05, 0, 0.1, 0)
+textBoxInput.PlaceholderText = "Enter your script here..."
+textBoxInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+textBoxInput.TextWrapped = true
+textBoxInput.ClearTextOnFocus = false
+textBoxInput.Parent = frame
+
+-- Create the Button for obfuscation
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.9, 0, 0.2, 0)
+button.Position = UDim2.new(0.05, 0, 0.45, 0)
+button.Text = "Obfuscate and Copy to Clipboard"
+button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.Parent = frame
+
+-- Create the TextBox to display the obfuscated script (optional)
+local obfuscatedTextBox = Instance.new("TextBox")
+obfuscatedTextBox.Size = UDim2.new(0.9, 0, 0.2, 0)
+obfuscatedTextBox.Position = UDim2.new(0.05, 0, 0.7, 0)
+obfuscatedTextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+obfuscatedTextBox.TextWrapped = true
+obfuscatedTextBox.ClearTextOnFocus = false
+obfuscatedTextBox.TextEditable = false
+obfuscatedTextBox.PlaceholderText = "Obfuscated script will appear here..."
+obfuscatedTextBox.Parent = frame
+
+-- Mapping table for obfuscation
+local obfuscationTable = {
+    ["local"] = "hakauaj",
+    ["function"] = "fncn",
+    ["end"] = "fnsh",
+    -- Add more mappings as needed
+}
+
+-- Function to obfuscate the script
+local function obfuscateScript(originalScript)
+    local obfuscatedScript = originalScript
+    for originalWord, obfuscatedWord in pairs(obfuscationTable) do
+        obfuscatedScript = obfuscatedScript:gsub("%f[%a]"..originalWord.."%f[%A]", obfuscatedWord)
+    end
+    return obfuscatedScript
+end
+
+-- Clipboard function (Note: This uses the Roblox Clipboard API)
+local function clipboard(text)
+    setclipboard(text) -- This is an example. Some environments may require different methods.
+end
+
+-- Button Click Event
+button.MouseButton1Click:Connect(function()
+    local inputScript = textBoxInput.Text
+    local obfuscatedScript = obfuscateScript(inputScript)
+    
+    -- Show the obfuscated script in the UI
+    obfuscatedTextBox.Text = obfuscatedScript
+
+    -- Copy to clipboard
+    clipboard(obfuscatedScript)
+    
+    print("Obfuscated script copied to clipboard!")
+end)
